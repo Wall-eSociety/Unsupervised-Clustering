@@ -10,7 +10,7 @@ Os dados utilizados nesta interação da disciplina do grupo podem ser encontrad
 
 ## Referencial teorico
 
-###Clusterização
+### Clusterização
 
 Clusterização consiste no agrupamento de dados em grupos semelhantes e significativos (*Clusters*), dessa forma capturando a estrutura natural dos dados apresentados.
 O objetivo natural da clusterização é que os grupos intra cluster sejam semelhantes entre si, e que os clusters sejam tenham diferenças significativas com relação aos outros clusters. Quanto maior for o grau de semelhança intra cluster e a diferença entre cluster, melhor é considerado o modelo montado.
