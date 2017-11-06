@@ -1,14 +1,44 @@
 ```python
+# Configure to show multiples outputs from a single cell
+from IPython.core.interactiveshell import InteractiveShell
+InteractiveShell.ast_node_interactivity = "all"
+
 import pandas as pd
 from scipy.sparse import csc_matrix
 
-trainData = pd.read_csv('../docword.nips.txt', delimiter=' ')
-
+doc = open('../docword.kos.txt')
+docs_count = int(doc.readline().replace('\n',''))
+dictionary_count = int(doc.readline().replace('\n',''))
+word_count = int(doc.readline().replace('\n',''))
+trainData = pd.read_csv(doc, delimiter=' ', names=['row', 'col', 'value'])
+doc.close()
 # csc = csc_matrix((trainData.value.tolist(), (trainData.row.tolist(), trainData.col.tolist())))
 
-print('Training data size:', len(trainData))
+print('docs: {}\ndictionary_count: {}\nwords: {}'.format(docs_count, dictionary_count, word_count))
 
 trainData.head(5)
+# Read words of dictionary
+vocabulary = pd.read_csv('../vocab.kos.txt', names=['vocab'])
+# Set the vocabulary index row begin in 1 instead 0
+vocabulary.index = vocabulary.index+1
+
+vocabulary.head()
+```
+
+```python
+x = trainData.groupby(['col'])['value']
+counts, sums = x.count(), x.sum()
+
+counts.head()
+sums.head()
+```
+
+```python
+vocabulary['count'] = counts
+vocabulary['sum'] = sums
+
+vocabulary
+
 ```
 
 ```python
@@ -31,7 +61,7 @@ plt.figure(figsize=[15, 7])
 plt.scatter(vocabularyId, words, c='darkgreen', marker='o', s=20, alpha=0.8, label='Word Count')
 plt.ylabel('Word count')
 plt.xlabel('Word ID')
-plt.xlim(0, 100)
+plt.xlim(0, dictionary_count+1)
 plt.legend()
 plt.title('Word Histogram first 100 docs')
 plt.show()
