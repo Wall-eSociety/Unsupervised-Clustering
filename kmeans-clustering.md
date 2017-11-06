@@ -4,14 +4,37 @@ from scipy.sparse import csc_matrix
 
 trainData = pd.read_csv('../docword.nips.txt', delimiter=' ')
 
-csc=csc_matrix( (trainData.value.tolist(), (trainData.row.tolist(), trainData.col.tolist())))
+# csc = csc_matrix((trainData.value.tolist(), (trainData.row.tolist(), trainData.col.tolist())))
 
 print('Training data size:', len(trainData))
+
+trainData.head(5)
 ```
 
 ```python
-X = csc
-X
+X = trainData.iloc[:, [1,2]]
+```
+
+```python
+docId = trainData.iloc[:, 0]
+vocabularyId = trainData.iloc[:, 1]
+words = trainData.iloc[:, 2]
+```
+
+```python
+%%time
+import numpy as np
+import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=[15, 7])
+plt.scatter(vocabularyId, words, c='darkgreen', marker='o', s=20, alpha=0.8, label='Word Count')
+plt.ylabel('Word count')
+plt.xlabel('Word ID')
+plt.xlim(0, 100)
+plt.legend()
+plt.title('Word Histogram first 100 docs')
+plt.show()
 ```
 
 # K Means
@@ -22,7 +45,7 @@ X
 Escolhemos o número de *clusters* de acordo com o primeiro ponto do gráfico que
 possui menor diferença se comparado com seus vizinhos.
 
-```{.python .input  n=3}
+```python
 %%time
 import numpy as np
 import matplotlib.pyplot as plt
@@ -30,17 +53,16 @@ from sklearn.cluster import KMeans
 
 wcss = []
 for i in range(1, 11):
-    kmeans = KMeans(n_clusters=i, init='k-means++', max_iter=300, n_init=10, random_state=0, n_jobs=-1)
+    kmeans = KMeans(n_clusters=i, init='k-means++', max_iter=300, random_state=0, n_jobs=-1)
     kmeans.fit(X)
     wcss.append(kmeans.inertia_)
 
+plt.figure(figsize=[15, 5])
 plt.plot(range(1,11), wcss)
 plt.title('Método Elbow')
 plt.xlabel('Número de clusters')
 plt.ylabel('WCSS')
 plt.show()
-
-print('Melhor número de clusters: 4')
 ```
 
 ## Aplicando o melhor número de clusters:
@@ -55,12 +77,12 @@ caia em:
 *clusters* que o necessário, o que torna o modelo altamente complexo e
 específico para a base de treinamento
 
-```{.python .input}
-kmeans = KMeans(n_clusters=4, init='k-means++', max_iter=300, n_init=10, random_state=0, n_jobs=-1)
+```python
+kmeans = KMeans(n_clusters=2, init='k-means++', max_iter=300, n_init=10, random_state=0, n_jobs=-1)
 y_kmeans = kmeans.fit_predict(X)
 ```
 
-```{.python .input}
+```python
 # Plot for 2D dataset
 
 # %%time
