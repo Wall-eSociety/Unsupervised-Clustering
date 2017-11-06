@@ -1,4 +1,4 @@
-```{.python .input  n=1}
+```python
 import pandas as pd
 from scipy.sparse import csc_matrix
 
@@ -9,19 +9,9 @@ csc=csc_matrix( (trainData.value.tolist(), (trainData.row.tolist(), trainData.co
 print('Training data size:', len(trainData))
 ```
 
-```{.json .output n=1}
-[
- {
-  "name": "stdout",
-  "output_type": "stream",
-  "text": "Training data size: 746316\n"
- }
-]
-```
-
-```{.python .input  n=2}
-X = trainData.iloc[:, :].values
+```python
 X = csc
+X
 ```
 
 # K Means
@@ -51,30 +41,6 @@ plt.ylabel('WCSS')
 plt.show()
 
 print('Melhor número de clusters: 4')
-```
-
-```{.json .output n=3}
-[
- {
-  "ename": "KeyboardInterrupt",
-  "evalue": "",
-  "output_type": "error",
-  "traceback": [
-   "\u001b[0;31m-------------------------------------------------------------------------\u001b[0m",
-   "\u001b[0;31mKeyboardInterrupt\u001b[0m                       Traceback (most recent call last)",
-   "\u001b[0;32m<timed exec>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m()\u001b[0m\n",
-   "\u001b[0;32m~/UnB/ml/.env/lib/python3.6/site-packages/sklearn/cluster/k_means_.py\u001b[0m in \u001b[0;36mfit\u001b[0;34m(self, X, y)\u001b[0m\n\u001b[1;32m    894\u001b[0m                 \u001b[0mtol\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtol\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mrandom_state\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mrandom_state\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcopy_x\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcopy_x\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    895\u001b[0m                 \u001b[0mn_jobs\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mn_jobs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0malgorithm\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0malgorithm\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 896\u001b[0;31m                 return_n_iter=True)\n\u001b[0m\u001b[1;32m    897\u001b[0m         \u001b[0;32mreturn\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    898\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
-   "\u001b[0;32m~/UnB/ml/.env/lib/python3.6/site-packages/sklearn/cluster/k_means_.py\u001b[0m in \u001b[0;36mk_means\u001b[0;34m(X, n_clusters, init, precompute_distances, n_init, max_iter, verbose, tol, random_state, copy_x, n_jobs, algorithm, return_n_iter)\u001b[0m\n\u001b[1;32m    361\u001b[0m                                    \u001b[0;31m# Change seed to ensure variety\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    362\u001b[0m                                    random_state=seed)\n\u001b[0;32m--> 363\u001b[0;31m             for seed in seeds)\n\u001b[0m\u001b[1;32m    364\u001b[0m         \u001b[0;31m# Get results with the lowest inertia\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    365\u001b[0m         \u001b[0mlabels\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0minertia\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mcenters\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mn_iters\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mzip\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0mresults\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-   "\u001b[0;32m~/UnB/ml/.env/lib/python3.6/site-packages/sklearn/externals/joblib/parallel.py\u001b[0m in \u001b[0;36m__call__\u001b[0;34m(self, iterable)\u001b[0m\n\u001b[1;32m    787\u001b[0m                 \u001b[0;31m# consumption.\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    788\u001b[0m                 \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_iterating\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;32mFalse\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 789\u001b[0;31m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mretrieve\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    790\u001b[0m             \u001b[0;31m# Make sure that we get a last message telling us we are done\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    791\u001b[0m             \u001b[0melapsed_time\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mtime\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtime\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;34m-\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_start_time\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-   "\u001b[0;32m~/UnB/ml/.env/lib/python3.6/site-packages/sklearn/externals/joblib/parallel.py\u001b[0m in \u001b[0;36mretrieve\u001b[0;34m(self)\u001b[0m\n\u001b[1;32m    697\u001b[0m             \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    698\u001b[0m                 \u001b[0;32mif\u001b[0m \u001b[0mgetattr\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_backend\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m'supports_timeout'\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;32mFalse\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 699\u001b[0;31m                     \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_output\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mextend\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mjob\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mtimeout\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mtimeout\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    700\u001b[0m                 \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    701\u001b[0m                     \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_output\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mextend\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mjob\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-   "\u001b[0;32m/usr/lib64/python3.6/multiprocessing/pool.py\u001b[0m in \u001b[0;36mget\u001b[0;34m(self, timeout)\u001b[0m\n\u001b[1;32m    636\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    637\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mget\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtimeout\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mNone\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 638\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwait\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mtimeout\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    639\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mready\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    640\u001b[0m             \u001b[0;32mraise\u001b[0m \u001b[0mTimeoutError\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-   "\u001b[0;32m/usr/lib64/python3.6/multiprocessing/pool.py\u001b[0m in \u001b[0;36mwait\u001b[0;34m(self, timeout)\u001b[0m\n\u001b[1;32m    633\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    634\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mwait\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtimeout\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mNone\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 635\u001b[0;31m         \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_event\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwait\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mtimeout\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    636\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    637\u001b[0m     \u001b[0;32mdef\u001b[0m \u001b[0mget\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtimeout\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mNone\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-   "\u001b[0;32m/usr/lib64/python3.6/threading.py\u001b[0m in \u001b[0;36mwait\u001b[0;34m(self, timeout)\u001b[0m\n\u001b[1;32m    549\u001b[0m             \u001b[0msignaled\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_flag\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    550\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0msignaled\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 551\u001b[0;31m                 \u001b[0msignaled\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_cond\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwait\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mtimeout\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    552\u001b[0m             \u001b[0;32mreturn\u001b[0m \u001b[0msignaled\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    553\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
-   "\u001b[0;32m/usr/lib64/python3.6/threading.py\u001b[0m in \u001b[0;36mwait\u001b[0;34m(self, timeout)\u001b[0m\n\u001b[1;32m    293\u001b[0m         \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m    \u001b[0;31m# restore state no matter what (e.g., KeyboardInterrupt)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    294\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0mtimeout\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 295\u001b[0;31m                 \u001b[0mwaiter\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0macquire\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    296\u001b[0m                 \u001b[0mgotit\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;32mTrue\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    297\u001b[0m             \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-   "\u001b[0;31mKeyboardInterrupt\u001b[0m: "
-  ]
- }
-]
 ```
 
 ## Aplicando o melhor número de clusters:
@@ -108,3 +74,65 @@ y_kmeans = kmeans.fit_predict(X)
 # plt.legend()
 # plt.show()
 ```
+
+# Validando o modelo
+
+Para avaliar a performance do modelo, deve-se fazer uma análise dos dados e a
+relação dos clusters gerados com os pontos disponíveis. Para tal, deve-se fazer
+uma análise dos dados dentro de cada cluster (intra cluster) e a relação entre
+os diferentes clusters (inter cluster)[1]. Outra métrica possível para realizar
+uma medição dos clusters é avaliar o _silhouette coeficient_ [2].
+
+## Intra e Inter
+
+A biblioteca do scikit learn fornece uma métrica chamada
+[inertia\_](http://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMe
+ans.html#sklearn.cluster.KMeans) que calcula a soma do quadrado da distância dos
+dados para o cluster mais próximo. Isso quer dizer que quanto menor este valor,
+mais próximo dos centroids do cluster estão as amostras. Essa métrica é
+utilizada para escolher o melhor K no método [elbow](#Método-Elbow).
+
+Os cálculos de inter e intra cluster são descritos em [1].
+\begin{equation*}
+inertia = intra = \sum_{i=1}^K \sum_{x \in C_i}^n ||x - C_i||^2 \\
+inter = min(||z_i - z_j||^2) \quad onde \quad \big\{ i = 1 ... ( K - 1 ) \ e\  j
+= ( i + 1 ) ... K
+\end{equation*}
+
+Nas equações acima, __K__ é o número de clusters, __C_i__ é um centroid cluster
+qualquer, __x__ é uma amostra dos dados e z é a representação dos centroids de
+um cluser.
+
+## Silhouette Coefficient
+
+É uma métrica que calcula junto os valores de coesão inter e intra cluster.  O
+cálculo para esta métrica é destrito como
+\begin{equation*}
+    silhouette = \frac{(b - a)}{max(a,b)}
+\end{equation*}
+
+em que o valor de __a__ é o valor da média da distância intra-cluster e __b__ é
+a média do cluster mais próximo a amostra.
+
+```python
+%%time
+
+from scipy.spatial import distance_matrix
+inter_distances = None
+def inter_cluster(kmeans_model):
+    clusters = kmeans_model.cluster_centers_
+    inter_distances = distance_matrix(clusters, clusters)
+    inter_distances[ inter_distances == 0 ] = np.inf
+    return inter_distances.min()
+
+min_inter_cluster = inter_cluster(kmeans)
+print(min_inter_cluster, kmeans.inertia_ / min_inter_cluster) 
+```
+
+# Referências
+
+[1] [Determination of Number of Clusters in K-Means Clustering and Application
+in Colour Image Segmentation](http://citeseerx.ist.psu.edu/viewdoc/download?doi=
+10.1.1.587.3517&rep=rep1&type=pdf)
+
+[2] [Silhouette](https://cs.fit.edu/~pkc/classes/ml-internet/silhouette.pdf)
