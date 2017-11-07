@@ -40,34 +40,10 @@ sums.head()
 ```python
 vocabulary['count'] = counts
 vocabulary['sum'] = sums
-
-vocabulary
+vocabulary[ (vocabulary['count'] < 170) & (vocabulary['sum'] < 100)]
 ```
 
 ```python
-InteractiveShell.ast_node_interactivity = "last"
-pivot = trainData.pivot_table('value', ['row'], 'col').fillna(0)
-pivot.columns = vocabulary.vocab.values
-pivot.head(-5)
-```
-
-```python
-filtered_df = []
-max_value = 200
-min_value = 50
-
-for index, row in vocabulary.iterrows():
-    if((row['count'] > 200 and row['sum'] > 100) or (row['count'] < 50 and row['sum'] > 200)):
-        print(row['vocab'])
-    else:
-        filtered_df.append((row['vocab'], row['count'], row['sum']))
-
-filtered_df = pd.DataFrame(filtered_df, columns=['vocab', 'count', 'sum'])
-filtered_df['vocab']
-```
-
-```python
-X = pivot.value
 docId = trainData.iloc[:, 0]
 vocabularyId = trainData.iloc[:, 1]
 words = trainData.iloc[:, 2]
@@ -89,6 +65,35 @@ plt.title('Word Histogram first 100 docs')
 plt.show()
 ```
 
+```python
+InteractiveShell.ast_node_interactivity = "last"
+pivot = trainData.pivot_table('value', ['row'], 'col').fillna(0)
+pivot.columns = vocabulary.vocab.values
+X = pivot.values
+pivot.head()
+```
+
+```python
+# pivot = pivot.drop(vocabulary[ (vocabulary['sum'] > 100) ].vocab.values, axis=1)
+# X = pivot.values
+# pivot
+```
+
+```python
+filtered_df = []
+max_value = 200
+min_value = 50
+
+for index, row in vocabulary.iterrows():
+    if((row['count'] > 200 and row['sum'] > 100) or (row['count'] < 50 and row['sum'] > 200)):
+        print(row['vocab'])
+    else:
+        filtered_df.append((row['vocab'], row['count'], row['sum']))
+
+filtered_df = pd.DataFrame(filtered_df, columns=['vocab', 'count', 'sum'])
+filtered_df
+```
+
 # K Means
 ## Como escolher o número de clusters?
 
@@ -102,7 +107,9 @@ possui menor diferença se comparado com seus vizinhos.
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
+```
 
+```python
 wcss = []
 for i in range(1, 11):
     kmeans = KMeans(n_clusters=i, init='k-means++', max_iter=300, random_state=0, n_jobs=-1)
@@ -131,7 +138,7 @@ específico para a base de treinamento
 
 ```python
 K = 20
-kmeans = KMeans(n_clusters=K, init='k-means++', max_iter=300, n_init=3, random_state=0, n_jobs=-1)
+kmeans = KMeans(n_clusters=K, init='k-means++', max_iter=300, n_init=10, random_state=0, n_jobs=-1)
 y_kmeans = kmeans.fit(X)
 ```
 
@@ -222,7 +229,7 @@ InteractiveShell.ast_node_interactivity = 'last'
 plt.figure(figsize=[15, 7])
 
 for cluster in kmeans.cluster_centers_:
-    plt.plot(np.arange(1, dictionary_count + 1), cluster)
+    plt.plot(np.arange(1, len(cluster) + 1), cluster)
 plt.show()
 
 ```
