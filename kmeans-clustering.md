@@ -12,20 +12,24 @@ dictionary_count = int(doc.readline().replace('\n',''))
 word_count = int(doc.readline().replace('\n',''))
 trainData = pd.read_csv(doc, delimiter=' ', names=['row', 'col', 'value'])
 doc.close()
-# csc = csc_matrix((trainData.value.tolist(), (trainData.row.tolist(), trainData.col.tolist())))
+csc = csc_matrix((trainData.value.tolist(), (trainData.row.tolist(), trainData.col.tolist())))
 
 print('docs: {}\ndictionary_count: {}\nwords: {}'.format(docs_count, dictionary_count, word_count))
 
 trainData.head(5)
 # Read words of dictionary
-vocabulary = pd.read_csv('../vocab.kos.txt', names=['vocab'])
+vocabulary = pd.read_csv('../vocab.kos.txt', names=['vocab', 'count', 'sum'])
 # Set the vocabulary index row begin in 1 instead 0
 vocabulary.index = vocabulary.index+1
+
 
 vocabulary.head()
 ```
 
 ```python
+# Count = Number of times word was used throughout the documents
+# Sums = Number of unique documents word was used on
+
 x = trainData.groupby(['col'])['value']
 counts, sums = x.count(), x.sum()
 
@@ -38,11 +42,27 @@ vocabulary['count'] = counts
 vocabulary['sum'] = sums
 
 vocabulary
-
 ```
 
 ```python
-X = trainData.iloc[:, [1,2]]
+# pivot = trainData.pivot_table('value', ['row'], 'col')
+# pivot.columns = vocabulary.vocab.values
+# pivot.head(-5)
+```
+
+```python
+filtered_df = []
+max_value = 200
+min_value = 50
+
+for index, row in vocabulary.iterrows():
+    if((row['count'] > 200 and row['sum'] > 100) or (row['count'] < 50 and row['sum'] > 200)):
+        print(row['vocab'])
+    else:
+        filtered_df.append((row['vocab'], row['count'], row['sum']))
+
+filtered_df = pd.DataFrame(filtered_df, columns=['vocab', 'count', 'sum'])
+filtered_df['vocab']
 ```
 
 ```python
@@ -108,6 +128,7 @@ caia em:
 específico para a base de treinamento
 
 ```python
+from sklearn.cluster import KMeans
 kmeans = KMeans(n_clusters=2, init='k-means++', max_iter=300, n_init=10, random_state=0, n_jobs=-1)
 y_kmeans = kmeans.fit_predict(X)
 ```
@@ -116,15 +137,15 @@ y_kmeans = kmeans.fit_predict(X)
 # Plot for 2D dataset
 
 # %%time
-# plt.figure(figsize=[15, 7])
-# plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 10, c = 'red', marker='v', label = 'Cluster 1')
-# plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 10, c = 'blue', marker='*', label = 'Cluster 2')
-# plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s = 10, c = 'orange', marker='s', label = 'Cluster 3')
-# plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s = 10, c = 'cyan', marker='o', label = 'Cluster 4')
-# plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s = 30, c = 'yellow', label = 'Centroids')
-# plt.title('NIPS Clusters')
-# plt.legend()
-# plt.show()
+plt.figure(figsize=[15, 7])
+plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 10, c = 'red', marker='v', label = 'Cluster 1')
+plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 10, c = 'blue', marker='*', label = 'Cluster 2')
+plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s = 10, c = 'orange', marker='s', label = 'Cluster 3')
+plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s = 10, c = 'cyan', marker='o', label = 'Cluster 4')
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s = 30, c = 'yellow', label = 'Centroids')
+plt.title('NIPS Clusters')
+plt.legend()
+plt.show()
 ```
 
 # Validando o modelo
