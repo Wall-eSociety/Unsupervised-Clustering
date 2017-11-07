@@ -16,7 +16,7 @@ csc = csc_matrix((trainData.value.tolist(), (trainData.row.tolist(), trainData.c
 
 print('docs: {}\ndictionary_count: {}\nwords: {}'.format(docs_count, dictionary_count, word_count))
 
-trainData.head(5)
+trainData.head()
 # Read words of dictionary
 vocabulary = pd.read_csv('../vocab.kos.txt', names=['vocab', 'count', 'sum'])
 # Set the vocabulary index row begin in 1 instead 0
@@ -45,9 +45,10 @@ vocabulary
 ```
 
 ```python
-# pivot = trainData.pivot_table('value', ['row'], 'col')
-# pivot.columns = vocabulary.vocab.values
-# pivot.head(-5)
+InteractiveShell.ast_node_interactivity = "last"
+pivot = trainData.pivot_table('value', ['row'], 'col').fillna(0)
+pivot.columns = vocabulary.vocab.values
+pivot.head(-5)
 ```
 
 ```python
@@ -66,6 +67,7 @@ filtered_df['vocab']
 ```
 
 ```python
+X = pivot.value
 docId = trainData.iloc[:, 0]
 vocabularyId = trainData.iloc[:, 1]
 words = trainData.iloc[:, 2]
@@ -128,9 +130,9 @@ caia em:
 específico para a base de treinamento
 
 ```python
-from sklearn.cluster import KMeans
-kmeans = KMeans(n_clusters=2, init='k-means++', max_iter=300, n_init=10, random_state=0, n_jobs=-1)
-y_kmeans = kmeans.fit_predict(X)
+K = 20
+kmeans = KMeans(n_clusters=K, init='k-means++', max_iter=300, n_init=3, random_state=0, n_jobs=-1)
+y_kmeans = kmeans.fit(X)
 ```
 
 ```python
@@ -167,14 +169,16 @@ utilizada para escolher o melhor K no método [elbow](#Método-Elbow).
 
 Os cálculos de inter e intra cluster são descritos em [1].
 \begin{equation*}
-inertia = intra = \sum_{i=1}^K \sum_{x \in C_i}^n ||x - C_i||^2 \\
+inertia = \sum_{i=1}^K \sum_{x \in C_i}^n ||x - C_i||^2 \\
+inter = \frac{intertia}{N} \\
 inter = min(||z_i - z_j||^2) \quad onde \quad \big\{ i = 1 ... ( K - 1 ) \ e\  j
 = ( i + 1 ) ... K
 \end{equation*}
 
 Nas equações acima, __K__ é o número de clusters, __C_i__ é um centroid cluster
-qualquer, __x__ é uma amostra dos dados e z é a representação dos centroids de
-um cluser.
+qualquer, __x__ é uma amostra dos dados, __z__ é a representação dos centroids
+de
+um cluser e __N__ é o total de clusters.
 
 ## Silhouette Coefficient
 
@@ -198,8 +202,52 @@ def inter_cluster(kmeans_model):
     inter_distances[ inter_distances == 0 ] = np.inf
     return inter_distances.min()
 
+max_intra_cluster = kmeans.inertia_ / K
 min_inter_cluster = inter_cluster(kmeans)
-print(min_inter_cluster, kmeans.inertia_ / min_inter_cluster) 
+print((min_inter_cluster, max_intra_cluster), max_intra_cluster / min_inter_cluster)
+```
+
+# Resultado
+
+Neste problema de clusterização, não é possível determinar se o modelo fez o
+trabalho correto em agrupar os dados ou não. Basea-se então na modelagem
+matemática da análise inter cluster e intra cluster para trazer mais confiança.
+Como é possível observar no valor da célula anterior da relação intra/inter. Em
+que busca-se minimizar o valor de intra e maximizar o valor do inter.
+
+A seguir, mostraremos um gráfico representativo de cada cluster.
+
+```python
+InteractiveShell.ast_node_interactivity = 'last'
+plt.figure(figsize=[15, 7])
+
+for cluster in kmeans.cluster_centers_:
+    plt.plot(np.arange(1, dictionary_count + 1), cluster)
+plt.show()
+
+```
+
+## Palavras representativas
+
+Com a caracterização dos clusters vistos acima, é perceptível que há algumas
+palavras que mais caracterizam um determinado cluster. Então, para tentar
+averiguar se a clusterização foi realizada com uma boa acurácia, iremos tentar
+identificar se as palavras que aparecem irão ter algum sentido lógico para
+representar o cluster.
+
+```python
+import collections
+clusters_amount = collections.Counter(kmeans.labels_)
+clusters = pd.DataFrame(kmeans.cluster_centers_)
+
+# indexes = clusters.iloc[0, :].sort_values(ascending=False).index
+# vocabulary.iloc[indexes]
+
+for cluster in clusters.iterrows():
+    idxs = cluster[1].sort_values(ascending=False)[:10].index
+    cluster_size = clusters_amount[cluster[0]]
+    top10_words = vocabulary.iloc[idxs].vocab.str.cat(sep=', ')
+    print("cluster {} ({}): {}".format(cluster[0], cluster_size, top10_words))
 ```
 
 # Referências
