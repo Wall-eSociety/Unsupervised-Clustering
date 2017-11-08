@@ -32,8 +32,50 @@ vocabulary.head()
 ```
 
 ```python
-# Count = Number of times word was used throughout the documents
-# Sums = Number of unique documents word was used on
+%%time
+
+InteractiveShell.ast_node_interactivity = "last"
+pivot = trainData.pivot_table('value', ['row'], 'col').fillna(0)
+none_df = pd.DataFrame(0, range(1, pivot.shape[0]+1), range(1, vocabulary.shape[0]+1))
+pivot = pivot.combine_first(none_df)
+print(pivot.shape, vocabulary.shape)
+pivot.columns = vocabulary.vocab.values
+X = pivot.values
+pivot.head()
+```
+
+```python
+pivot = pivot.drop(vocabulary[ (vocabulary['sum'] > 100) ].vocab.values, axis=1)
+X = pivot.values
+pivot
+```
+
+```python
+# Feature Scaling
+from sklearn.preprocessing import StandardScaler
+
+sc = StandardScaler()
+X_train = sc.fit_transform(X)
+
+print('X_train before PCA:\n', X_train)
+```
+
+```python
+%%time
+from sklearn.decomposition import PCA
+# PCA Dimensionality Reduction
+
+pca = PCA(n_components=2)
+X_train = pca.fit_transform(X_train)
+explained_variance = pca.explained_variance_ratio_
+
+explained_variance
+print('X_train after PCA to 2 dimensions:\n', X_train)
+```
+
+```python
+# Count = Number of unique documents word was used on 
+# Sums = Number of times word was used throughout the documents
 
 x = trainData.groupby(['col'])['value']
 counts, sums = x.count(), x.sum()
@@ -71,19 +113,6 @@ plt.show()
 ```
 
 ```python
-%%time
-
-InteractiveShell.ast_node_interactivity = "last"
-pivot = trainData.pivot_table('value', ['row'], 'col').fillna(0)
-none_df = pd.DataFrame(0, range(1, pivot.shape[0]+1), range(1, vocabulary.shape[0]+1))
-pivot = pivot.combine_first(none_df)
-print(pivot.shape, vocabulary.shape)
-pivot.columns = vocabulary.vocab.values
-X = pivot.values
-pivot.head()
-```
-
-```python
 # pivot = pivot.drop(vocabulary[ (vocabulary['sum'] > 100) ].vocab.values, axis=1)
 # X = pivot.values
 # pivot
@@ -113,21 +142,22 @@ Escolhemos o número de *clusters* de acordo com o primeiro ponto do gráfico qu
 possui menor diferença se comparado com seus vizinhos.
 
 ```python
-%%time
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 ```
 
 ```python
+%%time
 wcss = []
-for i in range(1, 11):
-    kmeans = KMeans(n_clusters=i, init='k-means++', max_iter=300, random_state=0, n_jobs=-1)
-    kmeans.fit(X)
+for i in range(1, 9):
+    kmeans = KMeans(n_clusters=i, init='k-means++', max_iter=100, n_init=1, random_state=0, n_jobs=-1)
+    kmeans.fit(X_train)
     wcss.append(kmeans.inertia_)
 
 plt.figure(figsize=[15, 5])
-plt.plot(range(1,11), wcss)
+plt.plot(range(1,9), wcss)
+plt.scatter(3, 79000, c='black', s=100, alpha=1.0)
 plt.title('Método Elbow')
 plt.xlabel('Número de clusters')
 plt.ylabel('WCSS')
@@ -147,9 +177,9 @@ caia em:
 específico para a base de treinamento
 
 ```python
-K = 20
+K = 3
 kmeans = KMeans(n_clusters=K, init='k-means++', max_iter=300, n_init=10, random_state=0, n_jobs=-1)
-y_kmeans = kmeans.fit(X)
+y_kmeans = kmeans.fit(X_train)
 ```
 
 ```python
@@ -157,12 +187,12 @@ y_kmeans = kmeans.fit(X)
 
 # %%time
 plt.figure(figsize=[15, 7])
-plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 10, c = 'red', marker='v', label = 'Cluster 1')
-plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 10, c = 'blue', marker='*', label = 'Cluster 2')
-plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s = 10, c = 'orange', marker='s', label = 'Cluster 3')
-plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s = 10, c = 'cyan', marker='o', label = 'Cluster 4')
-plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s = 30, c = 'yellow', label = 'Centroids')
-plt.title('NIPS Clusters')
+plt.scatter(X_train[y_kmeans == 0, 0], X_train[y_kmeans == 0, 1], s = 100, c = 'red', marker='v', label = 'Cluster 1')
+plt.scatter(X_train[y_kmeans == 1, 0], X_train[y_kmeans == 1, 1], s = 100, c = 'blue', marker='*', label = 'Cluster 2')
+plt.scatter(X_train[y_kmeans == 2, 0], X_train[y_kmeans == 2, 1], s = 100, c = 'orange', marker='s', label = 'Cluster 3')
+# plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s = 10, c = 'cyan', marker='o', label = 'Cluster 4')
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s = 300, c = 'yellow', label = 'Centroids')
+plt.title('Clusters')
 plt.legend()
 plt.show()
 ```
